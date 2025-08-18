@@ -5,7 +5,7 @@ import { getAuth } from "firebase/auth"; // <-- 1. IMPORT getAuth from the auth 
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBzQQEy5XzDODMMYZTjodf9pk5D509w21M",
+  apiKey: "<to_change>",
   authDomain: "cronwatch-469318.firebaseapp.com",
   projectId: "cronwatch-469318",
   storageBucket: "cronwatch-469318.firebasestorage.app",
