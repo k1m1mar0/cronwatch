@@ -52,3 +52,6 @@ availableSecrets:
   secretManager:
     - versionName: projects/cronwatch-469318/secrets/VITE_FIREBASE_API_KEY/versions/latest
       env: 'VITE_FIREBASE_API_KEY'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
