@@ -1,0 +1,54 @@
+steps:
+  # Step 1: Build the Docker container image.
+  # We use the standard Docker builder provided by Google.
+  - name: 'gcr.io/cloud-builders/docker'
+    # Give this step an ID so we can refer to it
+    id: 'Build'
+    # Make the secrets available as environment variables for this step
+    secretEnv:
+      - 'VITE_FIREBASE_API_KEY'
+    args:
+      - 'build'
+      - '-t'
+      # This tags the image with its future location in Artifact Registry.
+      # AR is like a private Docker Hub for your GCP project.
+      # IMPORTANT: Replace YOUR_REGION with the region you chose (e.g., 'europe-west3').
+      - 'us-central1-docker.pkg.dev/cronwatch-469318/cronwatch/cronwatch-service:$COMMIT_SHA'
+      # Pass the env vars into the Docker build process itself
+      - '--build-arg'
+      - 'VITE_FIREBASE_API_KEY'
+      - '.' # '.' means build the Dockerfile from the current directory.
+
+  # Step 2: Push the container image to Google Artifact Registry.
+  # This makes the image available for deployment.
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'us-central1-docker.pkg.dev/cronwatch-469318/cronwatch/cronwatch-service:$COMMIT_SHA'
+
+  # Step 3: Deploy the new image to Cloud Run.
+  # We use the gcloud builder to run command-line tools.
+  - name: 'gcr.io/google-appengine/exec-wrapper'
+    args:
+      - 'gcloud'
+      - 'run'
+      - 'deploy'
+      # IMPORTANT: Replace YOUR_SERVICE_NAME with the name you'll give your service (e.g., 'cronwatch').
+      - 'cronwatch' 
+      - '--image'
+      - 'us-central1-docker.pkg.dev/cronwatch-469318/cronwatch/cronwatch-service:$COMMIT_SHA'
+      # IMPORTANT: Use the same region as above.
+      - '--region'
+      - 'us-central1-a' 
+      # This flag allows unauthenticated users to access your web app.
+      # This is necessary for a public website.
+      - '--allow-unauthenticated'
+
+# This tells Cloud Build to store the images we just built.
+images:
+  - 'us-central1-docker.pkg.dev/cronwatch-469318/cronwatch/cronwatch-service:$COMMIT_SHA'
+
+availableSecrets:
+  secretManager:
+    - versionName: projects/cronwatch-469318/secrets/VITE_FIREBASE_API_KEY/versions/latest
+      env: 'VITE_FIREBASE_API_KEY'
