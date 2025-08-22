@@ -7,17 +7,14 @@ steps:
     # Make the secrets available as environment variables for this step
     secretEnv:
       - 'VITE_FIREBASE_API_KEY'
+    entrypoint: 'bash'
     args:
-      - 'build'
-      - '-t'
-      # This tags the image with its future location in Artifact Registry.
-      # AR is like a private Docker Hub for your GCP project.
-      # IMPORTANT: Replace YOUR_REGION with the region you chose (e.g., 'europe-west3').
-      - 'us-central1-docker.pkg.dev/cronwatch-469318/cronwatch/cronwatch-service:$COMMIT_SHA'
-      # Pass the env vars into the Docker build process itself
-      - '--build-arg'
-      - 'VITE_FIREBASE_API_KEY=$VITE_FIREBASE_API_KEY'
-      - '.' # '.' means build the Dockerfile from the current directory.
+      - '-c'
+      - |
+        docker build \
+          --tag 'us-central1-docker.pkg.dev/$PROJECT_ID/cronwatch/cronwatch-service:$COMMIT_SHA' \
+          --build-arg "VITE_FIREBASE_API_KEY=${VITE_FIREBASE_API_KEY}" \
+          .
 
   # Step 2: Push the container image to Google Artifact Registry.
   # This makes the image available for deployment.
