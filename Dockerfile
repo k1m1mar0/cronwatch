@@ -6,6 +6,9 @@ FROM node:lts-alpine AS builder
 # Set the working directory inside the container for the frontend code.
 WORKDIR /app/frontend
 
+ARG VITE_FIREBASE_API_KEY
+ENV VITE_FIREBASE_API_KEY=$VITE_FIREBASE_API_KEY
+
 # Copy only the package files first to leverage Docker's caching.
 # This step only re-runs if package.json or package-lock.json changes.
 COPY cronwatch-frontend/package*.json ./

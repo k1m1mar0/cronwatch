@@ -22,6 +22,8 @@ steps:
   # Step 2: Push the container image to Google Artifact Registry.
   # This makes the image available for deployment.
   - name: 'gcr.io/cloud-builders/docker'
+  # Give this step an ID so we can refer to it
+    id: 'Push'
     args:
       - 'push'
       - 'us-central1-docker.pkg.dev/cronwatch-469318/cronwatch/cronwatch-service:$COMMIT_SHA'
@@ -29,6 +31,8 @@ steps:
   # Step 3: Deploy the new image to Cloud Run.
   # We use the gcloud builder to run command-line tools.
   - name: 'gcr.io/google-appengine/exec-wrapper'
+  # Give this step an ID so we can refer to it
+    id: 'Deploy'
     args:
       - 'gcloud'
       - 'run'
