@@ -27,7 +27,7 @@ steps:
 
   # Step 3: Deploy the new image to Cloud Run.
   # We use the gcloud builder to run command-line tools.
-  - name: 'gcr.io/google-appengine/exec-wrapper'
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   # Give this step an ID so we can refer to it
     id: 'Deploy'
     args:
