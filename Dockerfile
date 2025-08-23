@@ -7,7 +7,7 @@ FROM node:lts-alpine AS builder
 WORKDIR /app/frontend
 
 ARG VITE_FIREBASE_API_KEY
-ENV VITE_FIREBASE_API_KEY=$VITE_FIREBASE_API_KEY
+RUN echo "VITE_FIREBASE_API_KEY=$VITE_FIREBASE_API_KEY" > .env
 
 # Copy only the package files first to leverage Docker's caching.
 # This step only re-runs if package.json or package-lock.json changes.
